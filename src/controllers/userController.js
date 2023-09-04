@@ -17,8 +17,13 @@ const authUser = async (req, res) => {
         if (authStatus) {
           const token = generateToken(userFound._id);
 
-          return res.status(200).json({
+          res.status(200).json({
             message: "Logged In",
+            _id: userFound._id,
+            name: userFound.name,
+            email: userFound.email,
+            isAdmin: userFound.isAdmin,
+            pic: userFound.pic,
             token,
           });
         } else {
