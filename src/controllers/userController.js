@@ -17,14 +17,16 @@ const authUser = async (req, res) => {
         if (authStatus) {
           const token = generateToken(userFound._id);
 
-          res.status(200).json({
+          return res.status(200).json({
             message: "Logged In",
-            _id: userFound._id,
-            name: userFound.name,
-            email: userFound.email,
-            isAdmin: userFound.isAdmin,
-            pic: userFound.pic,
-            token,
+            result: {
+              _id: userFound._id,
+              name: userFound.name,
+              email: userFound.email,
+              isAdmin: userFound.isAdmin,
+              pic: userFound.pic,
+              token,
+            },
           });
         } else {
           return res.status(403).json({
@@ -73,8 +75,14 @@ const registerUser = async (req, res) => {
 
     res.status(201).json({
       message: "User register successful",
-      newUser,
-      token: generateToken(newUser._id),
+      result: {
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        isAdmin: newUser.isAdmin,
+        pic: newUser.pic,
+        token: generateToken(newUser._id),
+      },
     });
   } catch (error) {
     res.status(500).json({
