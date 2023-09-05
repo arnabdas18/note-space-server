@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
-const protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   let token;
 
   if (
@@ -10,6 +10,10 @@ const protect = async (req, res, next) => {
   ) {
     try {
       token = req.headers.authorization.split(" ")[1];
+
+      if (!token) {
+        res.status(401).json({ message: "Not authorized, no token" });
+      }
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -20,10 +24,4 @@ const protect = async (req, res, next) => {
       res.status(401).json({ message: "Not authorized, token failed" });
     }
   }
-
-  if (!token) {
-    res.status(401).json({ message: "Not authorized, no token" });
-  }
 };
-
-export { protect };
