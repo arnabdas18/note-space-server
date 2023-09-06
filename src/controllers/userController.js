@@ -92,4 +92,40 @@ const registerUser = async (req, res) => {
   }
 };
 
-export { authUser, registerUser };
+// @desc    GET user profile
+// @route   GET /api/users/profile
+// @access  Private
+const updateUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      user.pic = req.body.pic || user.pic;
+      if (req.body.password) {
+        user.password = req.body.password;
+      }
+
+      const updatedUser = await user.save();
+
+      return res.json({
+        message: "User updated",
+        result: {
+          _id: updatedUser._id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          pic: updatedUser.pic,
+          isAdmin: updatedUser.isAdmin,
+          token: generateToken(updatedUser._id),
+        },
+      });
+    } else {
+      return res.status(404).json({ message: "User Not Found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export { authUser, registerUser, updateUserProfile };
